@@ -16,17 +16,17 @@ const (
 )
 
 type UAStatRecord struct {
-	UserAgent  string
-	TimesSeen  int64
-	LastSeenTS int64
-	value      int64
+	// UserAgent  string
+	// TimesSeen  int64
+	// LastSeenTS int64
+	value int64
 }
 
 type UAStatHeap []UAStatRecord
 
 // Len, Less, Swap для реализации интерфейса sort.Interface
 func (h UAStatHeap) Len() int           { return len(h) }
-func (h UAStatHeap) Less(i, j int) bool { return h[i].value < h[j].value }
+func (h UAStatHeap) Less(i, j int) bool { return h[i].value > h[j].value }
 func (h UAStatHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 
 func (h *UAStatHeap) Push(linei interface{}) {
@@ -40,16 +40,16 @@ func (h *UAStatHeap) Push(linei interface{}) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	rec.TimesSeen = intField
+	// rec.TimesSeen = intField
 
 	time, err := time.Parse(layout, line[37])
 	if err != nil {
 		log.Fatal(err)
 	}
-	rec.LastSeenTS = time.Unix()
+	// rec.LastSeenTS = time.Unix()
 
-	rec.value = rec.TimesSeen*10000000000 + rec.LastSeenTS
-
+	// rec.value = rec.TimesSeen*10000000000 + rec.LastSeenTS
+	rec.value = intField*10000000000 + time.Unix()
 	*h = append(*h, rec)
 }
 
@@ -78,7 +78,7 @@ func main() {
 	h := &UAStatHeap{}
 	heap.Init(h)
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 7; i++ {
 		line, err := csvReader.Read()
 		if err == io.EOF {
 			break
@@ -88,12 +88,13 @@ func main() {
 			log.Fatal(err)
 		}
 
-		fmt.Print(line[2], "\t", line[37], "\t", line[1], "\n")
 		heap.Push(h, line)
 	}
 
 	l := h.Len()
 	for i := 0; i < l; i++ {
+		fmt.Print(h, "\n")
 		fmt.Print(h.Pop(), "\n")
+		fmt.Print(h, "\n\n")
 	}
 }
