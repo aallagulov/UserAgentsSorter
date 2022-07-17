@@ -22,7 +22,14 @@ type UAStatRecord struct {
 	value      int64
 }
 
-func appendUAStatRecord(uaStatList *[]UAStatRecord, line []string) {
+type UAStatHeap []UAStatRecord
+
+// // Len, Less, Swap для реализации интерфейса sort.Interface
+// func (h UAStatHeap) Len() int           { return len(h) }
+// func (h UAStatHeap) Less(i, j int) bool { return h[i] < h[j] }
+// func (h UAStatHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+
+func (h *UAStatHeap) Push(line []string) {
 	var rec UAStatRecord
 
 	rec.UserAgent = line[1]
@@ -43,8 +50,16 @@ func appendUAStatRecord(uaStatList *[]UAStatRecord, line []string) {
 
 	rec.value = rec.TimesSeen*10000000000 + rec.LastSeenTS
 
-	*uaStatList = append(*uaStatList, rec)
+	*h = append(*h, rec)
 }
+
+// func (h *UAStatHeap) Pop() interface{} {
+// 	old := *h
+// 	n := len(old)
+// 	x := old[n-1]
+// 	*h = old[0 : n-1]
+// 	return x
+// }
 
 func main() {
 	f, err := os.Open("data/whatismybrowser-user-agent-database.csv")
@@ -54,16 +69,17 @@ func main() {
 	defer f.Close()
 
 	csvReader := csv.NewReader(f)
-	var uaStatList []UAStatRecord
-
 	// skipping first "headers" line
 	_, err = csvReader.Read()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	h := &UAStatHeap{}
+	// heap.Init(h)
+
 	for i := 0; i < 2; i++ {
-		data, err := csvReader.Read()
+		line, err := csvReader.Read()
 		if err == io.EOF {
 			break
 		}
@@ -72,9 +88,10 @@ func main() {
 			log.Fatal(err)
 		}
 
-		fmt.Print(data[2], "\t", data[37], "\t", data[1], "\n")
-		appendUAStatRecord(&uaStatList, data)
+		fmt.Print(line[2], "\t", line[37], "\t", line[1], "\n")
+		// heap.Push(h, line)
+		h.Push(line)
 	}
 
-	fmt.Print(uaStatList, "\n")
+	fmt.Print(h, "\n")
 }
