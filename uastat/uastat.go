@@ -7,10 +7,10 @@ import (
 )
 
 type Record struct {
-	// UserAgent  string
-	TimesSeen int64
-	// LastSeenTS int64
-	value int64
+	UserAgent  string
+	TimesSeen  int64
+	LastSeenTS int64
+	value      int64
 }
 
 const (
@@ -29,7 +29,7 @@ func (h *UAStatHeap) Push(linei interface{}) {
 
 	var rec Record
 
-	// rec.UserAgent = line[1]
+	rec.UserAgent = line[1]
 
 	intField, err := strconv.ParseInt(line[2], 10, 64)
 	if err != nil {
@@ -41,10 +41,9 @@ func (h *UAStatHeap) Push(linei interface{}) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// rec.LastSeenTS = time.Unix()
+	rec.LastSeenTS = time.Unix()
 
-	// rec.value = rec.TimesSeen*10000000000 + rec.LastSeenTS
-	rec.value = intField*10000000000 + time.Unix()
+	rec.value = rec.TimesSeen*10000000000 + rec.LastSeenTS
 
 	*h = append(*h, rec)
 }

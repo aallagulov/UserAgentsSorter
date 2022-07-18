@@ -26,7 +26,7 @@ func main() {
 
 	h := &uastat.UAStatHeap{}
 	heap.Init(h)
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		line, err := csvReader.Read()
 		if err == io.EOF {
 			break
@@ -40,6 +40,8 @@ func main() {
 	}
 
 	for h.Len() > 0 {
-		fmt.Print(heap.Pop(h), "\n")
+		r := heap.Pop(h)
+		p := r.(uastat.Record)
+		fmt.Print(p.TimesSeen, "||", p.UserAgent, "\n")
 	}
 }
