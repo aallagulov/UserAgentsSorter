@@ -4,6 +4,7 @@ import (
 	uastat "UserAgentsSorter/uastat"
 	"container/heap"
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -11,7 +12,11 @@ import (
 )
 
 func main() {
-	f, err := os.Open("data/whatismybrowser-user-agent-database.csv")
+	filePtr := flag.String("file", "data/whatismybrowser-user-agent-database.csv", "path to file with useragents data")
+	cntPtr := flag.Int("cnt", 10, "how many top useragents to collect")
+	flag.Parse()
+
+	f, err := os.Open(*filePtr)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,7 +43,7 @@ func main() {
 		}
 
 		heap.Push(h, line)
-		if h.Len() > 10 {
+		if h.Len() > *cntPtr {
 			heap.Pop(h)
 		}
 	}
