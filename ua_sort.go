@@ -1,7 +1,7 @@
 package main
 
 import (
-	uastat "UserAgentsSorter/uastat"
+	"UserAgentsSorter/uastat"
 	"container/heap"
 	"encoding/csv"
 	"flag"
