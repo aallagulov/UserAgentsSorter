@@ -52,9 +52,7 @@ func (h *UAStatHeap) Push(linei interface{}) {
 func (h *UAStatHeap) Pop() interface{} {
 	old := *h
 	n := len(old)
-
-	x := old[0]
-	*h = old[1:n]
-
-	return x
+	item := old[n-1]
+	*h = old[0 : n-1]
+	return item
 }

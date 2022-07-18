@@ -26,8 +26,7 @@ func main() {
 
 	h := &uastat.UAStatHeap{}
 	heap.Init(h)
-	fmt.Print("PUSH\n")
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 10; i++ {
 		line, err := csvReader.Read()
 		if err == io.EOF {
 			break
@@ -37,17 +36,10 @@ func main() {
 			log.Fatal(err)
 		}
 
-		fmt.Print(h, "\n")
-		fmt.Print("add this ", line[2], "\n")
 		heap.Push(h, line)
-		fmt.Print(h, "\n\n")
 	}
 
-	l := h.Len()
-	fmt.Print("POP\n")
-	for i := 0; i < l; i++ {
-		fmt.Print(h, "\n")
-		fmt.Print("pop this - ", h.Pop(), "\n")
-		fmt.Print(h, "\n\n")
+	for h.Len() > 0 {
+		fmt.Print(heap.Pop(h), "\n")
 	}
 }
