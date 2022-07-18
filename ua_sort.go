@@ -29,7 +29,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	h := &uastat.UAStatHeap{}
+	h := &uastat.Heap{}
 	heap.Init(h)
 
 	for line != nil {

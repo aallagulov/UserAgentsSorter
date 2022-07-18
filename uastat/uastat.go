@@ -17,14 +17,14 @@ const (
 	layout = "2006-01-02 15:04:05.000000"
 )
 
-type UAStatHeap []Record
+type Heap []Record
 
 // Len, Less, Swap для реализации интерфейса sort.Interface
-func (h UAStatHeap) Len() int           { return len(h) }
-func (h UAStatHeap) Less(i, j int) bool { return h[i].value < h[j].value }
-func (h UAStatHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h Heap) Len() int           { return len(h) }
+func (h Heap) Less(i, j int) bool { return h[i].value < h[j].value }
+func (h Heap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 
-func (h *UAStatHeap) Push(linei interface{}) {
+func (h *Heap) Push(linei interface{}) {
 	line := linei.([]string)
 
 	var rec Record
@@ -48,7 +48,7 @@ func (h *UAStatHeap) Push(linei interface{}) {
 	*h = append(*h, rec)
 }
 
-func (h *UAStatHeap) Pop() interface{} {
+func (h *Heap) Pop() interface{} {
 	old := *h
 	n := len(old)
 	item := old[n-1]
